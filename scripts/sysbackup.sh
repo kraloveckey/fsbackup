@@ -1,15 +1,11 @@
-#!/bin/sh
+#!/usr/bin/env bash
+#
 # Script for store system configuration files and information about installed
 # packages.
-# Скрипт для сохранения списк всех файлов в системе, списка установленных пакетов
-# и файлов конфигурации.
 #
-# http://www.opennet.ru/dev/fsbackup/
-# Copyright (c) 2001 by Maxim Chirkov. <mc@tyumen.ru>
 
 #-------------------
 # Name of backup, single word.
-# Имя бэкапа.
 #-------------------
 
 backup_name="test_host"
@@ -17,7 +13,6 @@ backup_name="test_host"
 
 #-------------------
 # Directory to store system backup. 
-# Корневая директория куда будут помещены данные системного бэкапа.
 #-------------------
 
 sysbackup_path="/usr/local/fsbackup/sys_backup" 
@@ -39,19 +34,19 @@ if [ "_$sysname" = "_linux" ]; then
     echo "Creating package list..."
     gzip -f $sysbackup_path/${backup_name}-rpm_conf.tar
     rpm -q -a > $sysbackup_path/${backup_name}-rpm.list
-    #dpkg -l > $sysbackup_path/${backup_name}-deb.list
+    dpkg -l > $sysbackup_path/${backup_name}-deb.list
     cat /proc/partitions > $sysbackup_path/partitions.txt
     cat /proc/mounts > $sysbackup_path/mounts.txt
     cat /proc/modules > $sysbackup_path/modules.txt
     /sbin/fdisk -l > $sysbackup_path/fdisk.txt
     netstat -rn > $sysbackup_path/routes.txt
-    # Бэкап MBR
+    getfacl -R -p / > $sysbackup_path/permissions.acl 2>&1 /dev/null
+    # Backup MBR
     #dd if=/dev/sda of=$sysbackup_path/mbr_sda.bin bs=1 count=512
-    # Списки устройств.
+    # Device lists.
     #cat /proc/pci > $sysbackup_path/pci.txt
     #cat /proc/bus/usb/devices > $sysbackup_path/usb.txt
     #cat /proc/scsi/scsi > $sysbackup_path/scsi.txt
-    
 fi
 
 if [ "_$sysname" = "_freebsd" ]; then
@@ -59,7 +54,7 @@ if [ "_$sysname" = "_freebsd" ]; then
     sysctl -a > $sysbackup_path/sysctl.txt
     fdisk > $sysbackup_path/fdisk.txt
     geom disk list > $sysbackup_path/geom_disk.txt
-    # Выводим данные о таблицах разделов.
+    # Output data about partition tables.
     {
 	disk_list=`sysctl kern.disks| cut -d':' -f2`
 	for disk in $disk_list; do
@@ -72,7 +67,7 @@ if [ "_$sysname" = "_freebsd" ]; then
         done
     }> $sysbackup_path/disk.txt
 
-    # Сохранение базовой конфигурации			        
+    # Saving basic configuration			        
     cp -f /etc/rc.conf $sysbackup_path/${backup_name}-rc.conf
     . /etc/rc.conf
     interface=`echo "$network_interfaces"| awk '{print $1}'`;
@@ -114,6 +109,3 @@ distSetCustom
 ENDL
     ls -tr /var/db/pkg| tee $sysbackup_path/${backup_name}-pgk.list | perl -ne 'print "package=${_}packageAdd\n"'>> $sysbackup_path/${backup_name}-install.cfg
 fi
-
-
-

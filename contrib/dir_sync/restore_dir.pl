@@ -1,9 +1,8 @@
 #!/usr/bin/perl
-# Скрипт создающий недастоющие директории и симлинки в пункте назначения по общему списку.
-# Список директорий подается во входной поток.
-# (c) Maxim Chirkov <mc@tyumen.ru>
+# Script that creates undesired directories and symlinks in the destination using a common list.
+# The list of directories is fed into the input stream.
 #
-# Формат использования: cat list.txt |./restore_dir.pl /корень_для_восстановления
+# Usage format: cat list.txt |./restore_dir.pl /root_for_restore
 
 use strict;
 

@@ -1,11 +1,8 @@
 #!/usr/bin/perl
 #
-# Created by Molchanov Alexander <xorader@mail.ru> 2010
-# ver: 0.2
-#
-# Делает ротацию WAL (Write-Ahead Logs) на FTP backup сервере в папку $cfg_remote_path/OLD
-# Это нужно сделать сразу после полного бакапа PG SQL
-# Этот скрипт вызывается автоматически из pgsql_backup.sh
+# Rotates WAL (Write-Ahead Logs) on the FTP backup server to the $cfg_remote_path/OLD folder
+# This should be done immediately after a full PG SQL backup.
+# This script is called automatically from pgsql_backup.sh
 
 use strict;
 
@@ -64,6 +61,3 @@ foreach $cur_dir ($ftp->ls()){
 }
 
 $ftp->quit;
-
-
-

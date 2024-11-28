@@ -1,13 +1,8 @@
 # Example of configuration file.
-# Пример файла конфигурации.
-#
-# http://www.opennet.ru/dev/fsbackup/
-# Copyright (c) 2001 by Maxim Chirkov. <mc@tyumen.ru>
 #
 
 #-------------------
 # Name of backup, single word.
-# Имя для бэкапа, строка состоящая из латинских букв, цифр и символа подчеркивания.
 #-------------------
 
 $cfg_backup_name = "testhost_users";
@@ -15,8 +10,6 @@ $cfg_backup_name = "testhost_users";
 
 #-------------------
 # Path of internal cache directory for local backup method.
-# Директория для помещения текущих хэшей для локального метода бэкапа, или
-# временных хешей для других методов.
 #-------------------
 
 $cfg_cache_dir = "/usr/local/fsbackup/cache";
@@ -25,32 +18,31 @@ $cfg_cache_dir = "/usr/local/fsbackup/cache";
 #-------------------
 # Full path of some external program running from C<fsbackup.pl>.
 # $prog_gzip = "" - not use compression, $prog_pgp = "" - not use encryption.
-# Пути к запускаемым в процессе выполнения бэкапа программам. Рекомендуется
-# не полениться и прописать полный путь к каждой программе.
-# Внимание ! При использовании шифрования через gpg, рекомендуется
-# установить значение $prog_gzip="", так как gpg перед шифрованием сжимает
-# данные, использование gzip приведет к двойному сжатию и лишней нагрузке на CPU.
+# Paths to the programs to be launched during the backup process. 
+# It is recommended not to be lazy and write the full path to each program.
+# Attention ! When using gpg encryption, it is recommended to
+# set $prog_gzip="", because gpg compresses data before encryption.
+# Using gzip will result in double compression and unnecessary CPU load.
 #-------------------
 
-$prog_md5sum	= "md5sum -b";
-$prog_tar	= "/usr/bin/tar";
+$prog_md5sum	= "/usr/bin/md5sum -b";
+$prog_tar	= "/bin/tar";
 $prog_ssh	= "/usr/bin/ssh";
 $prog_rm	= "/bin/rm";
-$prog_gzip	= "/usr/bin/gzip"; # Если равно "", то не использовать сжатие.
-#$prog_pgp	= "/usr/local/bin/gpg";  # Если равно "", то не применять шифрование.
-
+$prog_gzip	= "/usr/bin/gzip"; # If equal to "", then don't use compression.
+$prog_pgp	= "";  # If equal to "", do not apply encryption.
 
 #-------------------
 # Checksum method:
 #	timesize - checksum of file attributes (default, best speed)
 #	md5      - checksum of file attributes + MD5 checksum of file content.
-# Метод вычисления контрольных сумм для определения изменений в файле.
-#	timesize - учитывается время последнего изменения файла, его размер,
-#		   атрибуты файла, но не учитывается содержимое. Как правило
-#		   учета данных факторов достаточно для определения необходимости
-#		   обновления файла в бэкапе. Наиболее быстрый метод.
-#	md5	 - все параметры timesize + контрольная сумма содержимого
-#		   файла. Наиболее ресурсоемкий и медленный метод.
+# Checksum calculation method for determining changes in a file.
+#   timesize - takes into account the time of the last modification of the file, its size,
+#       file attributes, but not the contents. As a rule of thumb
+#       taking these factors into account is usually enough to determine whether
+#       to update the file in the backup. The fastest method.
+#   md5 - all timesize parameters + checksum of contents
+#       of the file. The most resource-intensive and slowest method.
 #-------------------
 
 $cfg_checksum = "timesize";
@@ -60,16 +52,8 @@ $cfg_checksum = "timesize";
 # Backup style:
 #	backup	    - incremental backup (copy only new and changed files).
 #	full_backup - full backup (copy all files).
-#	sync	    - file tree synchronization.
-#	hash	    - hash creation without storing archive (spying for new or changed files).
-# Определение типа операции, вида бэкапа.
-#	backup      - инкрементальный бэкап в архив (т.е. копируются только
-#		      изменившиеся с момента последнего бэкапа файлы)..
-#	full_backup - полный бэкап в архив, без хэша (т.е. всегда копируются
-#		      все файлы).
-#	sync        - синхронизация дерева (только для типа хранилища ssh или local).
-#	hash	    - только генерация хэша, без помещения файлов в архив
-#		      (пометка помещения файлов в бэкап, без физического перемещения)
+#	sync	    - file tree synchronization (only for ssh or local storage type).
+#	hash	    - hash creation without storing archive (spying for new or changed files, without physically moving).
 #-------------------
 
 $cfg_backup_style = "backup";
@@ -77,9 +61,9 @@ $cfg_backup_style = "backup";
 
 #-------------------
 # Incremental level (after how many incremental copy make full refresh of backup)
-# Число копий бэкапа, при инкрементальном бэкапе, после которых производится
-# полный бэкап. Например, при = 7 - 6 раз будут помещаться только изменения,
-# на 7 раз бэкап будет объединен в один файл. 0 - сколько угодно раз.
+# Number of backup copies, in case of incremental backup, after which a full backup is performed
+# Full backup. For example, at = 7 - 6 times only changes will be placed,
+# for 7 times the backup will be merged into one file. 0 - as many times as you like.
 #-------------------
 
 $cfg_increment_level = 2;
@@ -90,11 +74,11 @@ $cfg_increment_level = 2;
 # full backup.
 # 0 - don't save old backup
 # 1 - save old backup.
-# Сохранение предыдущей версии полного бэкапа перед инкрементальной ротацией или
-# заменой текущего неинкрементального бэкапа новой версией.
-# Старая версия помещается в подкаталог OLD.
-# 0 - не сохранять предыдущую версию.
-# 1 - сохранять предыдущую версию
+# Saving the previous version of the full backup before incremental rotation or
+# Replacing the current non-incremental backup with a new version.
+# The old version is placed in the OLD subdirectory.
+# 0 - do not save the previous version.
+# 1 - keep the previous version
 #-------------------
 
 $cfg_save_old_backup = 0;
@@ -105,10 +89,6 @@ $cfg_save_old_backup = 0;
 #	local	   - store backup on local file system.
 #	remote_ssh - store backup on remote host over SSH connection.
 #	remote_ftp - store backup on remote FTP server.
-# Тип хранилища для бэкапа. Описание см. в файле README.
-#	local	   - хранение бэкапа в локальной файловой системе.
-#	remote_ssh - копирование бэкапа на удаленную машину с использованием SSH
-#	remote_ftp - копирование бэкапа на удаленную машину по FTP
 #-------------------
 
 $cfg_type = "remote_ftp";
@@ -116,10 +96,10 @@ $cfg_type = "remote_ftp";
 
 #-------------------
 # Connection parameters for remote_ssh storage type.
-# Параметры необходимые для копирования бэкапа через ssh и ftp:
+# Parameters required to copy the backup via ssh and ftp:
 #-------------------
 
-$cfg_remote_host = "backupserver.ru";
+$cfg_remote_host = "backupserver.com";
 $cfg_remote_login = "backup_testhost";
 $cfg_remote_path = "/backup_users";
 
@@ -127,16 +107,15 @@ $cfg_remote_path = "/backup_users";
 # FTP transfer mode. If set to a non-zero value then all data transfers will
 # be done using passive mode. This is not usually required except for some dumb
 # servers, and some firewall configurations.
-# Режим соединения с FTP сервером (пассивный или активный).
-# 0 - Active режим.
-# 1 - Passive режим (для специфичных ftp серверов или особых настроек фаерволов).
+# Connection mode with FTP server (passive or active).
+# 0 - Active mode.
+# 1 - Passive mode (for specific ftp servers or special firewall settings).
 #-------------------
 
 $cfg_remote_ftp_mode = 0;
 
 #-------------------
 # Password of remote login for remote_ftp storage type.
-# Параметры необходимые для копирования бэкапа по ftp:
 #-------------------
 
 $cfg_remote_password = "Test1234";
@@ -144,9 +123,9 @@ $cfg_remote_password = "Test1234";
 
 #-------------------
 # Path of directory to store backup on local file system for local storage type.
-# Параметры необходимые для хранения бэкапа на локальной ФС:
-# Бэкап не должен быть в одной директории с кэшем. Создайте отдельную директорию,
-# например, archive.
+# Parameters required to store the backup on the local FS:
+# The backup should not be in the same directory as the cache. Create a separate directory,
+# for example, archive.
 #-------------------
 
 $cfg_local_path = "/usr/local/fsbackup/archive";
@@ -155,18 +134,18 @@ $cfg_local_path = "/usr/local/fsbackup/archive";
 #-------------------
 # Limit of file creation time in days.
 # If not 0, don't backup files created or modified later then $cfg_time_limit days.
-# Время в днях, файлы созданные ранее которого не будут помещаться в бэкап.
-# 0 - помещаем все фалы независимо от времени их создания.
+# Time in days, files created before which will not be placed in the backup.
+# 0 - put all files regardless of the time of their creation.
 #-------------------
 
 $cfg_time_limit = 0;
 
 
 #-------------------
-# Limit of maximum file size.
-# If not 0, don't backup files witch size more then $cfg_time_limit kilobytes.
-# Максимально допустимый размер файла в Kb для помещения в бэкап.
-# 0 - помещаем все фалы независимо от их размера.
+# Limit of file creation time in days.
+# If not 0, don't backup files created or modified later then $cfg_time_limit days.
+# Time in days, files created before which will not be placed in the backup.
+# 0 - put all files regardless of the time of their creation.
 #-------------------
 
 # 10Mb~
@@ -175,13 +154,12 @@ $cfg_size_limit = 10000;
 #-------------------
 # Size of maximum size (in KiloBytes) of single unpacked archive file (volume).
 # 0 - unlimited file size.
-# Максимальный размер (в Kb) несжатого архива с бэкапом, размещенного в одном
-# файле, т.е. размер тома. Полезно при создании гиганских архивов не влезающих
-# в ограничение файловой системы или при последующей записи архивов на CD-ROM
-# или другие накопители небольшого размера.
-# При превышении заданного размера, запись продолжается в следующий файл c
-# идентификатором '-2', '-3' и т.д.
-# 0 - размер архива не ограничен.
+# The maximum size (in Kb) of an uncompressed backup archive placed in a single
+# file, i.e. volume size. Useful when creating gigantic archives that do not fit into the file system's limits
+# into file system limitations or when writing archives to small drives.
+# If the specified size is exceeded, writing is continued to the next file c
+# identifier '-2', '-3', etc.
+# 0 - archive size is not limited.
 #-------------------
 
 $cfg_maximum_archive_size = 0;
@@ -189,8 +167,8 @@ $cfg_maximum_archive_size = 0;
 
 #-------------------
 # Root path for initial chdir.
-# Корневая директория, относительно которой файлы помещаются в бэкап и
-# относительно которой описаны пути для помещения файлов.
+# Root directory relative to which files are placed in the backup 
+# and relative to which paths for placing files are described.
 #-------------------
 
 $cfg_root_path = "/";
@@ -199,9 +177,8 @@ $cfg_root_path = "/";
 #-------------------
 # Name of user in public key ring with public key will be used for PGP encryption.
 # Not use encryption if not set.
-# Шифрования бэкапа с помощью PGP.
-# Если поле не заполнено, то pgp не применяется.
-# Иначе поле содержит UserId записи в public key ring.
+# Encrypt the backup using PGP.
+# Otherwise, the field contains the UserId of the record in the public key ring.
 #-------------------
 
 $cfg_pgp_userid = "backup";
@@ -213,11 +190,6 @@ $cfg_pgp_userid = "backup";
 #		  errors.
 #	1	- Output errors and warnings.
 #	2	- Output all the  available  data.
-#
-# Уровень "говорливости", регулирует объем выводимых программой сообщений.
-#	0	- Подавить вывод любых сообщений.
-#       1	- Выводить сообщения об ошибках и предупреждения
-#       2       - Выводить все сообщения
 #-------------------
 
 $cfg_verbose = 2;
@@ -229,14 +201,6 @@ $cfg_verbose = 2;
 #		  '!', '!d' and '=! rules.
 #	1	- not use a recursive entrance to directory prohibited for
 #                 backup (speed is increased, reduces flexibility of customization).
-#
-# Рекурсивный просмотр запрещенных директорий.
-#	0	- рекурсивно просматривать все содержимое директорий помеченных
-#		 для бэкапа, в том числе и содержимое директорий запрещенных
-#		 правилами '!', '!d' и '=!'.
-#       1	- не использовать рекурсивный вход в запрещенные для
-#		 бэкапа директории (увеличивается скорость бэкапа, уменьшает
-#		 гибкость настройки).
 #-------------------
 
 $cfg_stopdir_prune=0;
@@ -256,29 +220,12 @@ $cfg_stopdir_prune=0;
 #  d! - regexp directory mask for NOT include directory to backup.
 #
 #
-#
-# Список файлов и условий для помещения в бэкап.
-# (описываются после директивы __DATA__):
-#  /dir[/file] - путь к файлу/директории для бэкапа.
-#  !/dir[/file] - отрицание пути, не помещать в бэкап. Не маска, а реальный путь.
-#  # - комментарий
-# Маски:
-#  =~ - маска для файла или директории, а не абсолютный путь. Первый или второй символ.
-#  f~ - маска для файла. Первый или второй символ.
-#  d~ - маска для директории. Первый или второй символ.
-# Маски отрицания:
-#  =! - "НЕ" маска для файла или директории, а не абсолютный путь. Первый или второй символ.
-#  f! - "НЕ" маска для файла. Первый или второй символ.
-#  d! - "НЕ" маска для директории. Первый или второй символ.
+# Backup only takes place within the directories and files described in paths.
+# Path negations have a higher priority than paths.
+# Masks have a higher priority than paths or path negation,
+# "NOT" masks have a higher priority than regular masks:
 #
 #
-# Бэкап проходит только в рамках директорий и файлов описанных в путях.
-# Отрицания путей имеют более высокий приоритет чем пути.
-# Маски имеют более высокий приоритет, чем пути или отрицание путей,
-# маски "НЕ" имеют более высокий приоритет, чем обычные маски:
-#
-#
-# Таблица приоритетов:
 # Operation priority:
 #
 #    1.	=!
@@ -290,18 +237,18 @@ $cfg_stopdir_prune=0;
 #    7.	!
 #    8. path
 #
-#  Пример:
-#  /usr/home		# Объявляем /usr/home как пустой путь,
-#  !/usr/home		# для работы масок.
+#  Example:
+#  /usr/home		# Declare /usr/home as an empty path,
+#  !/usr/home		# for masks to work.
 #  d~public_html
 #  /var
 #  d!var/log
 #  f~netconf\.log.*
 #
-#  при этом только /usr/home/*/public_html будет добавлено в архив,
-#  а файлы директории /var/log/var/log/, за исключением messages, нет.
-#  Но, /usr/local/home/user/public_html добавлено в
-#  архив не будет ! Для поиска только по маскам нужно объявить:
+#  only /usr/home/*/public_html will be added to the archive,
+#  and the files in /var/log/var/log/, except for messages, will not.
+#  But, /usr/local/home/user/public_html will be added to the
+#  archive will not be ! To search by masks only, you need to declare:
 #  /
 #  !/
 #  d~public_html

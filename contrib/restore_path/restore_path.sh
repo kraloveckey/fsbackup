@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 backup_path="/usr/local/fsbackup"
 config_file="cfg_home"
@@ -129,4 +129,3 @@ cfg_type=`getvar cfg_type`
 	}
 	ssh_restore $n
 )
-

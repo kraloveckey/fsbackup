@@ -1,13 +1,11 @@
-#!/bin/sh
+#!/usr/bin/env bash
+#
 # Script for reinstall packages stored by sysbackup.sh
-# Скрипт для восстановления пакетов с программами.
-# 
-# http://www.opennet.ru/dev/fsbackup/
-# Copyright (c) 2001 by Maxim Chirkov. <mc@tyumen.ru>
+# NOT COMPLETE
+#
 
 #-------------------
 # Name of backup, single word.
-# Имя бэкапа.
 #-------------------
 
 backup_name="test_host"
@@ -15,7 +13,6 @@ backup_name="test_host"
 
 #-------------------
 # Directory with installed packets list, stored by sysbackup.sh.
-# Директория где расположен сохраненный скриптом sysbackup.sh список пакетов.
 #-------------------
 
 sysbackup_path="/usr/local/fsbackup/sys_backup" 
@@ -23,9 +20,6 @@ sysbackup_path="/usr/local/fsbackup/sys_backup"
 
 #-------------------
 # Directory where stored OS packages.
-# Директория где располдожены файлы с пакетами программ.
-# Для FreeBSD, если переменная не заполнена, пакеты будут установленны с сайта 
-# производителя.
 #-------------------
 
 packages_path="/usr/local/INST/RPMS" 
@@ -62,7 +56,3 @@ if [ "_$sysname" = "_freebsd" ]; then
 	done
     fi
 fi
-
-
-
-

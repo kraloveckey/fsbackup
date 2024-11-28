@@ -1,11 +1,6 @@
 #!/usr/bin/perl
 
-# Скрипт для поиска файлов в архивах созданных программой fsbackup             
-# Copyright (c) 2001 by Alex Sokoloff. <sokoloff@mail.ru>   
-#                                                           
-# Написан для fsbackup                                      
-# http://www.opennet.ru/dev/fsbackup/                       
-# Copyright (c) 2001 by Maxim Chirkov. <mc@tyumen.ru>       
+# Script to search for files in archives created by the fsbackup program
 
 #############################################
 
@@ -14,7 +9,7 @@ my $extract=0;
 $cfg_cache_dir = "./";
 my $findfile;
 
-# Обработка параметров командной строки
+# Processing command line parameters
 while (@ARGV){
     $arg= shift (@ARGV);
     if 	  ($arg eq "-h" or $arg eq "--help") {&help}		
@@ -33,24 +28,24 @@ while (@ARGV){
 }
 
 if ($findfile eq '') {
-    print "Не указан искомый файл\n";
+    print "File not specified\n";
     &help;
 }
 
-if ( ! -d $cfg_cache_dir ) {print "Дирректория: $cfg_cache_dir не найдена\n"; &help}
+if ( ! -d $cfg_cache_dir ) {print "Directory: $cfg_cache_dir not found\n"; &help}
 
 @files=sort {$b cmp $a} glob("$cfg_cache_dir/$cfg_backup_name*.$type" );
 if ($#files <0) {
-    print "В дирректории $cfg_cache_dir не найден ни один файл $cfg_backup_name.$type\n";
+    print "In the directory $cfg_cache_dir no files found $cfg_backup_name.$type\n";
     exit;    
 }
 
-# Переводим регулярные выражения 
+# Translate regular expressions
 $findfile=~ s/\./\\\./g;
 $findfile=~ s/\*/\.\+/g;    
 $findfile=~ s/\_/\./g;        
 
-# Собственно поиск и печать результатов    
+# Searching and printing the results
 foreach $f (@files){
     open (FILE, "$f");
     $tmp ="$f\n";
@@ -70,22 +65,21 @@ exit;
 
 sub help{
 print qq|Usage: fsfind  [OPTION]...  FILE
-Ищет FILE в архивах созданных в fsbackup, В имени файла допускается
-использование регулярных выражений:
-  *   любое количество любых символов
-  _   любой одиночный символ
+Searches for FILE in archives created in fsbackup, regular expressions are allowed 
+in the filename:
+  * any number of any characters
+  _ any single character
 
-Опции:
-  -d, --del	      	искать удаленные файлы
-  -p, --path ПУТЬ	путь к дирректории с архивами, если не указано,
-                         то поиск ведется в текущей дирректории
-  -m, --mask            Маска для имен файлов архивов в которых производится 
-                         поиск
-  -c, --cfgfile ФАЙЛ    файл конфигурации fsbackup в котором прописана 
-			 дирректория с архивами и имя файла архива
-  -h, --help	    	вывести эту подсказку и выйти
+Options:
+  -d, --del             search for deleted files
+  -p, --path PATH       path to the directory with archives, if not specified,
+                        then the search is performed in the current directory
+  -m, --mask            mask for file names of archives in which the search is performed. 
+                        search
+  -c, --cfgfile FILE    fsbackup configuration file in which is specified 
+                        directory with archives and archive file name
+  -h, --help            output this prompt and exit
 
 |;
     exit;                                                                     
 }
-

@@ -1,72 +1,51 @@
-#!/bin/sh
-# Script for backup SQL tables from SQLite
-# Скрипт для бэкапа данных хранимых в SQLite
+#!/usr/bin/env bash
 #
-# http://www.opennet.ru/dev/fsbackup/
-# Copyright (c) 2001-2004 by Maxim Chirkov. <mc@tyumen.ru>
+# Script for backup SQL tables from SQLite
 #
 # For restore data type:
-# Восстановление производится с помощью команды: 
-#  cat <backupfile> |sqlite <path_to_db_file>
+# cat <backupfile> | sqlite <path_to_db_file>
 #
 
 #-------------------
 # Name of backup, single word.
-# Имя бэкапа.
 #-------------------
 
 backup_name="test_host"
 
 #-------------------
 # Backup method:
-# full - backup full DB's structure and data.
-# db   - backup full DB's structure and data only for 'backup_db_list' databases.
-# notdb- backup full DB's structure and data for all DB's, except 
-#        data of 'backup_db_list' databases.
-#
-# Метод бэкапа:
-# full	- полный бэкап всех баз (рекомендуется), 
-#	 аналог запуска pg_dumpall или mysqldump --all-databases --all
-#
-# db    - бэкап только указанных в backup_db_list баз данных, записи по 
-#	  реконструкции баз и таблиц записываются для всех баз на SQL сервере.
-# notdb  - бэкап всех баз, кроме указанных в backup_db_list, записи по 
-#	   реконструкции баз и таблиц записываются для всех баз на SQL сервере.
-#          Возможно исключение из бэкапа  выборочных таблиц, тогда формат 
-#	   списка исключаемых таблиц задается в виде: 
-#	   "trash_db1 trash_db2:table1 trash_db2:table2"
-#          - производим бэкап всех баз, коме базы trash_db1 и таблиц table1 и 
-#	   table2 базы trash_db2.
-#          
-#
+# full  - backup full DB's structure and data.
+# db    - backup full DB's structure and data only for 'backup_db_list' databases.
+# notdb - backup full DB's structure and data for all DB's, except 
+#         data of 'backup_db_list' databases.
+# 		  It is possible to exclude selective tables from the backup, then the format 
+# 		  of the list of excluded tables is set as: 
+# 		  "trash_db1 trash_db2:table1 trash_db2:table2"
+# 		  - backup all bases, except trash_db1 base and tables table1 and 
+# 		  table2 of trash_db2 base.
 #-------------------
 
 backup_method="notdb"
 
 #-------------------
 # List of databases (full path delimited by spaces)
-# Список включаемых или исключаемых из бэкапа баз (полный путь к базе), через пробел.
-# Таблицы указываются в в переменной backup_tables_list в виде: имя_базы:имя_таблицы
-# Внимание, при выборе метода "db" требует полное перечисление всех 
-# помещаемых в бэкап баз и таблиц в переменную backup_tables_list
+# Tables are specified in the backup_tables_list variable as: database_name:table_name
+# Attention, selecting the “db” method requires a complete listing of all 
+# databases and tables to be backed up into the backup_tables_list variable
 #-------------------
 
 backup_db_list="/home/test/test /home/web/work_db /home/rt/rt3"
 backup_tables_list="test rt3:Links"
 
 #-------------------
-# Directory to store SQL backup. You must have enought free disk space to store 
-# all data from you SQL server.
-# Директория куда будет помещен бэкап данных с SQL сервера. 
-# Внимание !!! Должно быть достаточно свободного места для бэкапа всех 
-# выбранных БД.
+# Directory to store SQLite backup. You must have enough free disk space to store 
+# all data from you SQLite server.
 #-------------------
 
 backup_path="/usr/local/fsbackup/sys_backup"
 
 #-------------------
-# Full path of sqlite program.
-# Путь к программе sqlite
+# Full path of SQLite program.
 #-------------------
 
 backup_progdump_path="/usr/local/bin"
@@ -78,8 +57,7 @@ if [ -n "$backup_progdump_path" ]; then
 fi
 
 #-------------------------------------------------------------------------
-# Полный бэкап для SQLite
-
+# Full backup for SQLite
 if [ "_$backup_method" = "_full" ]; then
     echo "Creating full backup of all SQLite databases."
     for cur_db in $backup_db_list; do
@@ -95,7 +73,7 @@ if [ "_$backup_method" = "_full" ]; then
 fi
 
 #-------------------------------------------------------------------------
-# Бэкап указанных баз для SQLite
+# Backup of specified databases for SQLite
 if [ "_$backup_method" = "_db" ]; then
     echo "Creating full backup of $backup_tables_list SQLite databases."
 
@@ -137,7 +115,7 @@ fi
 
 
 #-------------------------------------------------------------------------
-# Бэкап всех баз кроме указанных для Postgresql
+# Backup of all databases except for SQLite
 if [ "_$backup_method" = "_notdb" ]; then
     echo "Creating full backup of all SQLite databases except databases $backup_tables_list."
 
@@ -183,5 +161,3 @@ if [ "_$backup_method" = "_notdb" ]; then
 fi
 
 echo "Configuration error. Not valid parameters in backup_method or backup_sqltype."
-
-

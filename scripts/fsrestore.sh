@@ -1,14 +1,11 @@
-#!/bin/sh
-# Script for restore files backuped by fsbackup.pl
-# Восстановление данных из инкрементального бэкапа.
-# Внимание, данные предварительно должны быть расшифрованы в случае использования PGP
+#!/usr/bin/env bash
 #
-# http://www.opennet.ru/dev/fsbackup/
-# Copyright (c) 2001 by Maxim Chirkov. <mc@tyumen.ru>
+# Script for restore files backuped by fsbackup.pl
+# Attention, the data must be decrypted beforehand in case PGP is used
+#
 
 #-------------------
 # Name of backup, single word.
-# Имя бэкапа.
 #-------------------
 
 backup_name="test_host"
@@ -16,7 +13,6 @@ backup_name="test_host"
 
 #-------------------
 # Directory with content of incremental backup.
-# Директория где находится бэкап.
 #-------------------
 
 backup_path="/mnt/backup"
@@ -24,7 +20,6 @@ backup_path="/mnt/backup"
 
 #-------------------
 # Directory to save restored data.
-# Корневая директория куда будут помещены данные восстановленные из бэкапа.
 #-------------------
 
 restore_path="/var/backup" 
@@ -59,5 +54,3 @@ for cur_arc in `ls *.tar* | sort -n`; do
 done
 
 cd $old_path
-
-

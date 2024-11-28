@@ -1,7 +1,9 @@
-#!/bin/sh
-# Ежечасный бэкап наиболее критичных данных на SQL сервере.
+#!/usr/bin/env bash
+#
+# Hourly backup of the most critical data on SQL server.
 # cron:
 # 53 */1 * * *   /usr/local/fsbackup/scripts/hourly_sql_backup.sh >/dev/null
+#
 
 backup_database="testbase"
 
@@ -28,8 +30,7 @@ fi
 
 
 #-------------------------------------------------------------------------
-# Бэкап указанных баз для Postgresql
-
+# Backup of specified databases for PostgreSQL
 
     for cur_table in $usefull_table_list; do
 	echo "Dumping $cur_table..."

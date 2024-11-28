@@ -1,8 +1,9 @@
-#!/bin/sh
-
-# Копирование /home с бэкапами на запасной диск.
-# Удаление на запасной диске "OLD" директорий.
+#!/usr/bin/env bash
+#
+# Copy /home with backups to a backup disk.
+# Delete "OLD" directories on the backup disk.
 # 8 23 5,20 * * /usr/local/etc/backup/double_tar.sh
+#
 
 rm -rf /backup/reserv.0
 mkdir /backup/reserv.0

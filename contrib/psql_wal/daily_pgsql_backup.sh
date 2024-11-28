@@ -1,35 +1,28 @@
-#!/bin/sh
+#!/usr/bin/env bash
 #
-# Created by Molchanov Alexander <xorader@mail.ru> 2010
-# ver 0.2
+# This script transfers Postgres WAL files (Write-Ahead Logs) to an FTP backup server.
+# WAL files are the SQL history of all the changes Postgres makes, which are written always.
 #
-# Этот скрипт переносит WAL-файлы (Write-Ahead Logs) Postgres'а на FTP backup сервер.
-# WAL-файлы - это SQL история всех изменений которые делает Postgres и которые пишутся ПОСТОЯННО.
-
-# Для работы данного скрипта необходимо
-# 1) Установить ncftp (http://www.ncftp.com/)
+# This script requires:
+# 1) Install ncftp package.
 #    For gentoo: emerge -v net-ftp/ncftp
 # 2)
 #   $ mkdir -p /home/require_for_sql_backup/pgsql_wal /home/require_for_sql_backup/tmp_wal
 #   $ chown postgres -R /home/require_for_sql_backup
-# 3) добавить следующую строку в postgresql.conf и перезапустить postgres:
+# 3) add the following line to postgresql.conf and restart postgres:
 #   archive_command = 'cp -i %p /home/require_for_sql_backup/pgsql_wal/%f < /dev/null'
 
-# Скрипт daily_pgsql_backup.sh рекомендуется запускать каждый час.
-# Пример строки для cron: 47 */1 * * * /usr/local/fsbackup/scripts/daily_pgsql_backup.sh| mail -s "`uname -n` WAL backup report" root
-
-##############################
-# Полезные ссылки:
-#  http://www.postgresql.org/docs/current/static/continuous-archiving.html
-#  http://wiki.opennet.ru/HotBackupPostgreSQL
+# It is recommended to run the daily_pgsql_backup.sh script every hour.
+# Example cron line: 47 */1 * * * /usr/local/fsbackup/scripts/daily_pgsql_backup.sh | mail -aFrom:"FROM NAME<from_example@example.com>" -s "WAL Backup Report: `hostname`, `hostname -I | awk '{print $1}'`" to_example@example.com
 #
-# Как восстанавливать из WAL-файлов читайте в конце этого скрипта
+# How to restore from WAL files read at the end of this script
+#
 #-------------------------------------------------
 
 
 backup_name="hostname_pgsql_daily"
 backup_suuser="postgres"
-# можно просто использовать: backup_db="template1"
+# can use: backup_db="template1"
 backup_db="dbname"
 wal_dir="/home/require_for_sql_backup/pgsql_wal"
 tmp_dir="/home/require_for_sql_backup/tmp_wal"
@@ -89,7 +82,6 @@ echo "daily_pgsql_backup.sh done."
 exit 0
 
 ####################################################
-# Как восстанавливать из WAL-файлов:
 # Recovering using a Continuous Archive Backup (WAL)
 
 ##########
@@ -125,5 +117,3 @@ exit 0
 # Example recovery.conf:  restore_command = 'cp /mnt/server/archivedir/%f %p'
 
 ##########
-
-

@@ -1,8 +1,10 @@
-#!/bin/sh
-# Ротация почасовых бэкапов SQL за день
-
+#!/usr/bin/env bash
+#
+# Rotation of hourly SQL backups per day
+#
 # cron:
 # 43 0 * * *      /usr/local/fsbackup/scripts/daily_sql_backup.sh >/dev/null
+#
 
 backup_path="/backup/.DB"
 backup_path2="/backup/.DB.last"

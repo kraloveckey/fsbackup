@@ -1,8 +1,7 @@
 #!/usr/bin/perl
-# Скрипт для построения полного списка поддиректорий и симлинков для заданной директории.
-# (c) Maxim Chirkov <mc@tyumen.ru>
+# Script to build a complete list of subdirectories and symlinks for a given directory.
 #
-# Формат использования: create_dir_list.pl /dir > list.txt
+# Usage format: create_dir_list.pl /dir > list.txt
 
 use strict;
 use File::Find;

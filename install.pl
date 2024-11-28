@@ -3,17 +3,12 @@
 # --prefix=install path, default /usr/local/fsbackup
 # --prefix-man=manual path location, default /usr/local/man/man1
 #
-# Скрипт для установки программы и всех недостающих Perl модулей.
-# --prefix=путь куда устаналивать программу, по умолчанию /usr/local/fsbackup
-# --prefix-man=путь куда скопировать системное руководство для программы.
-#
-# http://www.opennet.ru/dev/fsbackup/
-# Copyright (c) 2001 by Maxim Chirkov. <mc@tyumen.ru>
 
 $default_install_path = "/usr/local/fsbackup";
 $default_install_man = "/usr/local/man/man1";
 
 #########################################################################
+
 %module_list = (
 		"Digest/MD5.pm" 	=> "Digest-MD5-2.13.tar.gz",
 		"DB_File.pm"		=> "DB_File-1.77.tar.gz",
@@ -21,6 +16,7 @@ $default_install_man = "/usr/local/man/man1";
 		);
 
 #-----------------------------------------------------------------------
+
 use Getopt::Long;
 
 GetOptions("prefix=s", \$prefix, "prefix-man=s", \$prefix_man);
@@ -126,9 +122,10 @@ while (($cur_module_path, $cur_archive)= each(%module_list)) {
 
 print "Installation complete.\n";
 exit;
-#############################################################
-# Процедура для копирования файлов с изменениями
 
+#############################################################
+# Procedure for copying modified files
+#
 sub copyfile{
 	my ($from_file, $to_file) = @_;
 
@@ -174,8 +171,10 @@ sub copyfile{
     close(TO_FILE);
     close(FROM_FILE);
 }
+
 ######################################################################
-# Процедура для автоматической установки модулей.
+# Procedure for automatic module installation.
+#
 sub install_module{
 	my($module_name, $module_archive) = @_;
 	my ($module_dir);
