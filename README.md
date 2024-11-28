@@ -584,7 +584,7 @@ $ chmod 400 /etc/postfix/sasl_passwd
 $ chown root:root /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
 $ chmod 0600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db
 
-$ chfn -f "Wazuh Server" root
+$ chfn -f "Backup Server" root
 
 $ systemctl restart postfix
 
