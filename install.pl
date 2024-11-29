@@ -65,7 +65,7 @@ print "Installing fsbackup in $prefix...\n";
 system ("cp -f FAQ.md $prefix/FAQ.md");
 system ("chmod 644 $prefix/FAQ.md");
 system ("cp -f README.md $prefix/README.md");
-system ("chmod 644 $prefix/README");
+system ("chmod 644 $prefix/README.md");
 system ("cp -f fsbackup.1 $prefix/fsbackup.1");
 system ("chmod 644 $prefix/fsbackup.1");
 
