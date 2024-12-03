@@ -13,7 +13,6 @@ $default_install_man = "/usr/local/man/man1";
 		"Digest/MD5.pm" 	=> "Digest-MD5-2.13.tar.gz",
 		"DB_File.pm"		=> "DB_File-1.77.tar.gz",
 		"Net/FTP.pm"		=> "libnet-1.0703.tar.gz",
-		"Net/SFTP.pm"		=> "Net-SFTP-0.10.tar.gz",
 		);
 
 #-----------------------------------------------------------------------
