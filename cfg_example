@@ -87,9 +87,10 @@ $cfg_save_old_backup = 1;
 
 #-------------------
 # Type of backup storage:
-#	local	   - store backup on local file system.
-#	remote_ssh - store backup on remote host over SSH connection.
-#	remote_ftp - store backup on remote FTP server.
+#	local	    - store backup on local file system.
+#	remote_ssh  - store backup on remote host over SSH connection.
+#	remote_ftp  - store backup on remote FTP server.
+#	remote_ftps - store backup on remote FTPS server.
 #-------------------
 
 $cfg_type = "local";

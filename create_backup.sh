@@ -55,6 +55,16 @@ backup_sys=0
 
 mount_winshare=0
 
+#--------------------------------------
+# 1 - run mount-ftps-share.sh script (you need edit mount-ftps-share.sh first!), 0 - not run.
+#
+# Flag to run the script that mounts the FTPS share.
+# Pre-configuration of the ./scripts/mount-ftps-share.sh script is required,
+# 1 to run, 0 not to run.
+#--------------------------------------
+
+mount_ftpsshare=0
+
 #############################################################################
 # Protection against re-running two copies of fsbackup.pl
 IDLE=`ps auxwww | grep fsbackup.pl | grep -v grep`
@@ -90,6 +100,11 @@ if [ $mount_winshare -eq 1 ]; then
     ./scripts/mount-windows-share.sh || exit 1
 fi
 
+# Mount FTPS share (wait for it to show up)
+if [ $mount_ftpsshare -eq 1 ]; then
+    ./scripts/mount-ftps-share.sh || exit 1
+fi
+
 # Backup.
 for cur_conf in $config_files; do
     ./fsbackup.pl ./$cur_conf
@@ -102,4 +117,9 @@ done
 # Unmounting the Windows share.
 if [ $mount_winshare -eq 1 ]; then
     ./scripts/mount-windows-share.sh umount
+fi
+
+# Unmounting the FTPS share.
+if [ $mount_ftpsshare -eq 1 ]; then
+    ./scripts/mount-ftps-share.sh umount
 fi

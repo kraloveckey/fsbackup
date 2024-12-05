@@ -124,7 +124,7 @@ if ($cfg_backup_style eq "full_backup" || $cfg_backup_style eq "hash"){
     $cfg_clean_flag=1;
 }
 
-if (! grep {$_ eq $cfg_type} ("local", "remote_ssh", "remote_ftp")){
+if (! grep {$_ eq $cfg_type} ("local", "remote_ssh", "remote_ftp", "remote_ftps")){
     die "Unknown backup target:\$cfg_type=$cfg_type\n";
 }
 
@@ -195,7 +195,7 @@ if ($cfg_increment_level != 0 && $cfg_backup_style eq "backup"){
 	    }
 	}
 	close (DIR);
-    } elsif ( $cfg_type eq "remote_ftp"){
+    } elsif ( $cfg_type eq "remote_ftp" || $cfg_type eq "remote_ftps" ){
 	foreach $cur_dir ($ftp->ls()){
 	    if ($cur_dir =~ /${cfg_backup_name}\-.*\-0\.tar${arc_ext}$/){
 	        $cur_increment_level++;
@@ -217,7 +217,7 @@ if ( $cfg_type eq "local"){
     rename ("$cfg_cache_dir/$cfg_backup_name/.hash", "$cfg_cache_dir/$cfg_backup_name/.hash.last");
 }elsif ( $cfg_type eq "remote_ssh"){
     system ("$prog_ssh -l $cfg_remote_login $cfg_remote_host 'cat $cfg_remote_path/.hash' > $cfg_cache_dir/$cfg_backup_name/.hash.last") == 0 || print "SSH connection failed: $?\n";
-} elsif ( $cfg_type eq "remote_ftp"){
+} elsif ( $cfg_type eq "remote_ftp" || $cfg_type eq "remote_ftps" ){
     unlink ("$cfg_cache_dir/$cfg_backup_name/.hash.last");
     $ftp->get(".hash", "$cfg_cache_dir/$cfg_backup_name/.hash.last")|| print "FTP error, Can't GET .hash\n";
 }
@@ -232,7 +232,7 @@ if ( $cfg_type eq "local"){
 
 # Close the ftp connection. The next block may take much longer to execute 
 # than the ftp timeout.
-if ( $cfg_type eq "remote_ftp"){
+if ( $cfg_type eq "remote_ftp" || $cfg_type eq "remote_ftps" ){
     $ftp->quit;
 }
 # Create a new hash.
@@ -342,7 +342,7 @@ if ($cfg_backup_style eq "hash"){ # Only create a hash without archiving.
 	system( "cp -f $cfg_cache_dir/$cfg_backup_name/.hash $cfg_local_path/.hash") == 0 || print "Local FS copy hash failed: $?";
     } elsif ( $cfg_type eq "remote_ssh"){
 	system( "cat $cfg_cache_dir/$cfg_backup_name/.hash | $prog_ssh -l $cfg_remote_login $cfg_remote_host 'cat - > $cfg_remote_path/.hash'") == 0 || print "SSH connection failed (copy hash): $?\n";
-    } elsif ( $cfg_type eq "remote_ftp"){
+    } elsif ( $cfg_type eq "remote_ftp" || $cfg_type eq "remote_ftps" ){
 	$ftp->delete(".hash");
 	$ftp->put("$cfg_cache_dir/$cfg_backup_name/.hash", ".hash")|| print "Can't upload .hash to remote server via FTP\n";
     }
@@ -359,7 +359,7 @@ if ( $cfg_type eq "local"){
     print "Storing local backup...\n" if ($cfg_verbose == &VERB_ALL);
     if ($cfg_backup_style eq "sync"){
 	if ($cfg_clean_flag == 1){ # Delete old copies
-	    print "WARNING: If you really shure to delete $cfg_local_path before sync operatioun uncomment line 'system( \"find \$cfg_local_path ! -path '\$cfg_local_path' -maxdepth 1 -exec \$prog_rm -rf \{\} \\;\");'" if ($cfg_verbose >= &VERB_ALL);
+	    print "WARNING: If you really sure to delete $cfg_local_path before sync operation uncomment line 'system( \"find \$cfg_local_path ! -path '\$cfg_local_path' -maxdepth 1 -exec \$prog_rm -rf \{\} \\;\");'" if ($cfg_verbose >= &VERB_ALL);
 	}
 
 	system( "cd $cfg_local_path; sh $cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.del");
@@ -438,7 +438,7 @@ if ( $cfg_type eq "local"){
             system( "$prog_tar -c -f - -T $tmp_list_file $prog_gzip_filter $prog_pgp_filter| $prog_ssh -l $cfg_remote_login $cfg_remote_host 'cat - > $cfg_remote_path/$backup_file_base-$arc_block_level.tar${arc_ext}'") == 0 || print "SSH connection failed (tar): $?\n";
 	}
     }
-} elsif ( $cfg_type eq "remote_ftp"){
+} elsif ( $cfg_type eq "remote_ftp" || $cfg_type eq "remote_ftps" ){
     print "Storing remote ftp backup...\n" if ($cfg_verbose == &VERB_ALL);
 
     if ($cfg_backup_style eq "sync"){
@@ -474,8 +474,8 @@ if ( $cfg_type eq "local"){
 	$ftp->put("$cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.dir", "$backup_file_base.dir")|| print "Can't PUT .dir file to remote FTP server\n";
 	$ftp->delete("$backup_file_base.del");
 	$ftp->put("$cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.del", "$backup_file_base.del")|| print "Can't PUT .del file to remote FTP server\n";
-        $ftp->delete("$backup_file_base.hash");
-        $ftp->put("$cfg_cache_dir/$cfg_backup_name/.hash", "$backup_file_base.hash")|| print "Can't PUT old .hash file to remote FTP server\n";
+    $ftp->delete("$backup_file_base.hash");
+    $ftp->put("$cfg_cache_dir/$cfg_backup_name/.hash", "$backup_file_base.hash")|| print "Can't PUT old .hash file to remote FTP server\n";
 	$ftp->delete(".hash");
 	$ftp->put("$cfg_cache_dir/$cfg_backup_name/.hash", ".hash")|| print "Can't PUT new .hash file to remote FTP server\n";
 
@@ -494,7 +494,7 @@ if ( $cfg_type eq "local"){
     }
 }
 
-if ( $cfg_type eq "remote_ftp"){
+if ( $cfg_type eq "remote_ftp" || $cfg_type eq "remote_ftps" ){
     $ftp->quit;
 }
 print "***** Backup successful complete.\n" if ($cfg_verbose == &VERB_ALL);
@@ -663,10 +663,10 @@ sub check_path {
 
 sub ftp_connect{
     if ( $cfg_type eq "remote_ftp"){
-		$ftp = Net::FTP->new($cfg_remote_host, Timeout => 30, Debug => 0,  Passive => $cfg_remote_ftp_mode) || die "Can't connect to ftp server.\n";
-		$ftp->login($cfg_remote_login, $cfg_remote_password) || die "Can't login to ftp server.\n";
-		$ftp->cwd($cfg_remote_path) || $ftp->mkdir("$cfg_remote_path") || die "Path $cfg_remote_path not found on ftp server.\n";
-		$ftp->binary();    
+	    $ftp = Net::FTP->new($cfg_remote_host, Timeout => 30, Debug => 0,  Passive => $cfg_remote_ftp_mode) || die "Can't connect to ftp server.\n";
+	    $ftp->login($cfg_remote_login, $cfg_remote_password) || die "Can't login to ftp server.\n";
+	    $ftp->cwd($cfg_remote_path) || $ftp->mkdir("$cfg_remote_path") || die "Path $cfg_remote_path not found on ftp server.\n";
+	    $ftp->binary();    
     }
 	elsif ( $cfg_type eq "remote_ftps"){
         $ftp = Net::FTPSSL->new($cfg_remote_host, Encryption => EXP_CRYPT, Timeout => 30, Debug => 0, Croak => 0) || die "Can't connect to ftps server.\n";
@@ -857,7 +857,7 @@ Type of backup storage:
     local  - store backup on local file system.
     remote_ssh - store backup on remote host over SSH connection.
     remote_ftp - store backup on remote FTP server.
-
+    remote_ftps - store backup on remote FTPS server.
 
 =item B<$cfg_remote_host> = 'backup-server.test.com'
 
