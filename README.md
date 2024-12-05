@@ -88,11 +88,12 @@ Unlike many automatic backup systems, `fsbackup` uses a flexible masking system 
 - `sync`: synchronize the tree.
 - `hash`: hash generation only, without putting files in the archive (can be used to determine which files have been modified).
 
-3. Three types of backup storage:
+3. Four types of backup storage:
 
 - `local`: storing the backup in the local file system.
 - `remote_ssh`: copy the backup to a remote machine using SSH
 - `remote_ftp`: copy the backup to a remote machine using FTP.
+- `remote_ftps`: copy the backup to a remote machine using FTPS.
 
 4. Eight built-in operators (you can use regex) to describe files to be placed in the backup (or ignored for being placed in the backup):
 
@@ -349,6 +350,16 @@ $cfg_remote_password="Test1234"; # FTP login password.
 $cfg_remote_login="backup_login"; # Login under which backup will be saved.
 $cfg_remote_path="/home/backup_login/backup"; # The directory where the backup files should be placed, the directory must be present.
 $cfg_remote_ftp_mode=0; # Active (0) or Passive (1) connection.
+```
+
+4. `remote_ftps` - save backup on remote computer, data is transferred via ftps protocol, the remote host must have an ftp server running. Since the password is stored in the configuration file in clear form, it is desirable to restrict access to the remote host via `tcpwrapper` or `firewall`, as well as to restrict the login of the user under which the backup will be stored, only via chroot ftp. The positive sides of copying via ftp, is the high performance of the upload and a small load on the CPU. Configuration:
+
+```shell
+$cfg_type="remote_ftps";
+$cfg_remote_host="server.remote.com"; # Server to which the backup will be copied.
+$cfg_remote_password="Test1234"; # FTP login password.
+$cfg_remote_login="backup_login"; # Login under which backup will be saved.
+$cfg_remote_path="/home/backup_login/backup"; # The directory where the backup files should be placed, the directory must be present.
 ```
 
 ---

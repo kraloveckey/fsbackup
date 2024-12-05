@@ -14,6 +14,7 @@ use POSIX;
 use File::Find;
 use Digest::MD5 qw(md5_base64);
 use Net::FTP;
+use Net::FTPSSL;
 use DB_File;
 
 use constant VERB_SILENT => 0; # Silent mode, suspend all output.
@@ -662,11 +663,17 @@ sub check_path {
 
 sub ftp_connect{
     if ( $cfg_type eq "remote_ftp"){
-	$ftp = Net::FTP->new($cfg_remote_host, Timeout => 30, Debug => 0,  Passive => $cfg_remote_ftp_mode) || die "Can't connect to ftp server.\n";
-	$ftp->login($cfg_remote_login, $cfg_remote_password) || die "Can't login to ftp server.\n";
-	$ftp->cwd($cfg_remote_path) || $ftp->mkdir("$cfg_remote_path") || die "Path $cfg_remote_path not found on ftp server.\n";
-	$ftp->binary();    
+		$ftp = Net::FTP->new($cfg_remote_host, Timeout => 30, Debug => 0,  Passive => $cfg_remote_ftp_mode) || die "Can't connect to ftp server.\n";
+		$ftp->login($cfg_remote_login, $cfg_remote_password) || die "Can't login to ftp server.\n";
+		$ftp->cwd($cfg_remote_path) || $ftp->mkdir("$cfg_remote_path") || die "Path $cfg_remote_path not found on ftp server.\n";
+		$ftp->binary();    
     }
+	elsif ( $cfg_type eq "remote_ftps"){
+        $ftp = Net::FTPSSL->new($cfg_remote_host, Encryption => EXP_CRYPT, Timeout => 30, Debug => 0, Croak => 0) || die "Can't connect to ftps server.\n";
+        $ftp->login($cfg_remote_login, $cfg_remote_password) || die "Can't login to ftps server.\n";
+        $ftp->cwd($cfg_remote_path) || $ftp->mkdir("$cfg_remote_path") || die "Path $cfg_remote_path not found on ftps server.\n";
+        $ftp->binary();
+	}
 }
 ###############################################
 # Creating a list of files to be placed in a specific volume of a multi-volume archive.

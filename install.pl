@@ -10,9 +10,12 @@ $default_install_man = "/usr/local/man/man1";
 #########################################################################
 
 %module_list = (
-		"Digest/MD5.pm" 	=> "Digest-MD5-2.13.tar.gz",
-		"DB_File.pm"		=> "DB_File-1.77.tar.gz",
-		"Net/FTP.pm"		=> "libnet-1.0703.tar.gz",
+		"Digest/MD5.pm" 	   => "Digest-MD5-2.13.tar.gz",
+		"DB_File.pm"		   => "DB_File-1.77.tar.gz",
+		"Net/FTP.pm"		   => "libnet-1.0703.tar.gz",
+		"FTPSSL.pm"		       => "Net-FTPSSL-0.42.tar.gz",
+		"lib/IO/Socket/SSL.pm" => "IO-Socket-SSL-2.089.tar.gz",
+		"lib/Net/SSLeay.pm"	   => "Net-SSLeay-1.94.tar.gz",
 		);
 
 #-----------------------------------------------------------------------
