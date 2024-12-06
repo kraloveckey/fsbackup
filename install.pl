@@ -13,9 +13,9 @@ $default_install_man = "/usr/local/man/man1";
 		"Digest/MD5.pm" 	   => "Digest-MD5-2.13.tar.gz",
 		"DB_File.pm"		   => "DB_File-1.77.tar.gz",
 		"Net/FTP.pm"		   => "libnet-1.0703.tar.gz",
-		"FTPSSL.pm"		       => "Net-FTPSSL-0.42.tar.gz",
-		"lib/IO/Socket/SSL.pm" => "IO-Socket-SSL-2.089.tar.gz",
-		"lib/Net/SSLeay.pm"	   => "Net-SSLeay-1.94.tar.gz",
+		"FTPSSL.pm"		       => "Net-FTPSSL-0.42.tar.gz", # https://metacpan.org/pod/Net::FTPSSL
+		"lib/IO/Socket/SSL.pm" => "IO-Socket-SSL-2.089.tar.gz", # https://metacpan.org/dist/IO-Socket-SSL/view/lib/IO/Socket/SSL.pod
+		"lib/Net/SSLeay.pm"	   => "Net-SSLeay-1.94.tar.gz", # https://metacpan.org/dist/Net-SSLeay/view/lib/Net/SSLeay.pod
 		);
 
 #-----------------------------------------------------------------------
@@ -96,6 +96,8 @@ copyfile("scripts/sqlite_backup.sh", "$prefix/scripts/sqlite_backup.sh");
 system ("chmod 711 $prefix/scripts/sqlite_backup.sh");
 copyfile("scripts/mount-windows-share.sh", "$prefix/scripts/mount-windows-share.sh");
 system ("chmod 711 $prefix/scripts/mount-windows-share.sh");
+copyfile("scripts/mount-ftps-share.sh", "$prefix/scripts/mount-ftps-share.sh");
+system ("chmod 711 $prefix/scripts/mount-ftps-share.sh");
 
 print "* If you system not support MD5, please manually install module ./modules/Digest-Perl-MD5-1.5.tar.gz\n";
 print "* If Berkeley DB not installed and failed compilation of DB_File-1.77.tar.gz, please manually install DB from http://www.sleepycat.com.\n";

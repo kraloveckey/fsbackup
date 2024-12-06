@@ -72,6 +72,10 @@ Unlike many automatic backup systems, `fsbackup` uses a flexible masking system 
 
 12. `scripts/fsrestore.sh` - Script for restoring data from an incremental backup.
 
+13. `scripts/mount-windows-share.sh` - This script mounts Windows share. The fsbackup configs must have parameters: `$cfg_type = "local";` and `$cfg_local_path = "/usr/local/fsbackup/archive";`.
+    
+14. `scripts/mount-ftps-share.sh` - This script mounts FTPS share. The fsbackup configs must have parameters: `$cfg_type = "local";` and `$cfg_local_path = "/usr/local/fsbackup/archive";`.
+
 ---
 
 ## Performed functions
@@ -602,4 +606,4 @@ $ systemctl restart postfix
 $ echo "Test mail from postfix" | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: `hostname`, `hostname -I | awk '{print $1}'`" to_example@example.com
 ```
 
-> The password must be an [App Password](https://security.google.com/settings/security/apppasswords). App Passwords can only be used with accounts that have 2-Step Verification turned on. 
+> The password must be an [App Password](https://security.google.com/settings/security/apppasswords). App Passwords can only be used with accounts that have 2-Step Verification turned on.

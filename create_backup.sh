@@ -110,7 +110,7 @@ for cur_conf in $config_files; do
     ./fsbackup.pl ./$cur_conf
     next_iter=`echo "$config_files"| grep "$cur_conf "`
     if [ -n "$next_iter" ]; then
-	sleep 600 # Sleep for 10 minutes, let the processor cool down :-)
+	sleep 60 # Sleep for 1 minute, let the processor cool down :-)
     fi
 done
 

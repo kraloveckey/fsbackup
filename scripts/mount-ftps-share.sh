@@ -10,7 +10,7 @@
 #
 
 # FTPS host settings
-FTPS_HOST=192.168.1.44
+FTPS_HOST=ftps.dns.com
 FTPS_SHARE=BACKUP
 FTPS_USER=backup
 FTPS_PASS=somepassword
@@ -36,7 +36,7 @@ echo "Check and wait availability FTPS shared directory at '$FTPS_HOST:$FTPS_CHE
 nc -z $FTPS_HOST $FTPS_CHECK_PORT
 res=$?
 
-# Wait while SMB is up
+# Wait while FTPS is up
 while [ $res -ne 0 ]
 do
         nc -z $FTPS_HOST $FTPS_CHECK_PORT
@@ -48,24 +48,22 @@ do
 done
 
 # Check if share already mounted
-if [ -n "`/bin/df -h | egrep \"//$FTPS_HOST:$FTPS_SHARE\"`" ]
+if [ -n "`/bin/df -h | egrep \"$FTPS_HOST:$FTPS_SHARE\"`" ]
 then
-	echo "Error!  '//$FTPS_HOST/$FTPS_SHARE' already mounted (check mounts). Exit."
+	echo "Error!  '$FTPS_HOST:$FTPS_SHARE' already mounted (check mounts). Exit."
 	exit 2
 fi
 
-echo "Sleep 20sec for waiting up all services"
-sleep 20
 echo "Ok, try to mount..."
 
 if curlftpfs -o allow_other,ssl $FTPS_USER:$FTPS_PASS@$FTPS_HOST:$FTPS_SHARE $LOCAL_MNT_DIR
 then
-	echo "Share mount success. Now begining backup."
+	echo "Share mount success. Now beginning backup."
 
 	sleep 1
 	exit 0
 else
 
-	echo "Fail mount //$FTPS_HOST/$FTPS_SHARE share. Exit."
+	echo "Fail mount $FTPS_HOST:$FTPS_SHARE share. Exit."
 	exit 1
 fi
