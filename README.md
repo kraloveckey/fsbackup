@@ -17,6 +17,7 @@
 	- [Backup encryption](#backup-encryption)
 	- [Notes](#notes)
 	- [Postfix](#postfix)
+	- [ssmtp](#ssmtp)
 
 ---
 
@@ -604,6 +605,47 @@ $ chfn -f "Backup Server" root
 $ systemctl restart postfix
 
 $ echo "Test mail from postfix" | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: `hostname`, `hostname -I | awk '{print $1}'`" to_example@example.com
+```
+
+> The password must be an [App Password](https://security.google.com/settings/security/apppasswords). App Passwords can only be used with accounts that have 2-Step Verification turned on.
+
+## ssmtp
+
+Install and configure `ssmtp` for SMTP: `mail` command. Change these lines in `/etc/ssmtp/ssmtp.conf` to configure `ssmtp`. Create the file if missing.
+
+```shell
+$ apt update && apt install ssmtp mailutils
+$ nano /etc/ssmtp/ssmtp.conf
+#
+# Config file for sSMTP sendmail
+#
+# The person who gets all mail for userids < 1000
+# Make this empty to disable rewriting.
+root=TO@dns.com
+mailhub=smtp.gmail.com:587
+UseSTARTTLS=Yes
+#UseTLS=Yes
+AuthUser=MAIL_AUTH@dns.com
+AuthPass=MAIL_APPPASSWORD
+# The full hostname
+hostname=server.dns.com
+# Are users allowed to set their own From: address?
+# YES - Allow the user to specify their own From: address
+# NO - Use the system generated From: address
+FromLineOverride=NO
+
+$ cat /etc/ssmtp/revaliases
+# sSMTP aliases
+#
+# Format:       local_account:outgoing_address:mailhub
+#
+# Example: root:your_login@your.domain:mailhub.your.domain[:port]
+# where [:port] is an optional port number that defaults to 25.
+root:MAIL_FROM@dns.com:smtp.gmail.com:587
+
+$ chfn -f "Backup Server" root
+
+$ echo "Test mail from ssmtp" | mail -s "Backup Report: `hostname`, `hostname -I | awk '{print $1}'`" to_example@example.com
 ```
 
 > The password must be an [App Password](https://security.google.com/settings/security/apppasswords). App Passwords can only be used with accounts that have 2-Step Verification turned on.
