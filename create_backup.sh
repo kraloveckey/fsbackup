@@ -123,3 +123,10 @@ fi
 if [ $mount_ftpsshare -eq 1 ]; then
     ./scripts/mount-ftps-share.sh umount
 fi
+
+# Mount-unmount FTPS share for upload archive from cache.
+if [ $mount_ftpsshare -eq 1 ]; then
+    ./scripts/mount-ftps-share.sh >/dev/null 2>&1 || exit 1
+    sleep 900 # Sleep for 15 minutes
+    ./scripts/mount-windows-share.sh umount >/dev/null 2>&1
+fi
