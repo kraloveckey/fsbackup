@@ -8,5 +8,5 @@
 letter="`/opt/fsbackup/create_backup.sh` "
 
 if [ "$letter" ]; then 
-    echo  "$letter " | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: `hostname`, `hostname -I | awk '{print $1}'`" to_example@example.com
+    echo  "$letter " | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: $(hostname), $(hostname -I | awk '{print $1}')" to_example@example.com
 fi

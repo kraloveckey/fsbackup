@@ -129,7 +129,7 @@ To install the program, just run the `./install.pl` script. The program will be 
 After installation, just rename and edit the configuration file `cfg_example`, following the instructions inside `cfg_example`. Then, edit the startup script `create_backup`.sh, if necessary change the path to the backup storage and the name of the list of configuration files used. Activate periodic startup of the backup subsystem in crontab:
 
 ```shell
-18 4 * * * /usr/local/fsbackup/create_backup.sh | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: `hostname`, `hostname -I | awk '{print $1}'`" to_example@example.com
+18 4 * * * /usr/local/fsbackup/create_backup.sh | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: $(hostname), $(hostname -I | awk '{print $1}')" to_example@example.com
 ```
 
 When using MySQL Server or system backup, edit the scripts in the `./scripts` directory (`mysql_backup.sh`, `pgsql_backup.sh`, `sysbackup.sh`).
@@ -525,13 +525,13 @@ crontab -e
 Add string for weekly backup:
 
 ```shell
-1 1 * * 1 root  /usr/local/fsbackup/create_backup.sh | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: `hostname`, `hostname -I | awk '{print $1}'`" to_example@example.com
+1 1 * * 1 root  /usr/local/fsbackup/create_backup.sh | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: $(hostname), $(hostname -I | awk '{print $1}')" to_example@example.com
 ```
 
 Or for daily backup:
 
 ```shell
-1 1 * * * root  /usr/local/fsbackup/create_backup.sh | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: `hostname`, `hostname -I | awk '{print $1}'`" to_example@example.com
+1 1 * * * root  /usr/local/fsbackup/create_backup.sh | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: $(hostname), $(hostname -I | awk '{print $1}')" to_example@example.com
 ```
 
 You can run it as `nice -n 5 /usr/local/fsbackup/create_backup.sh` if you want decrease CPU load by backup for other apps.
@@ -604,7 +604,7 @@ $ chfn -f "Backup Server" root
 
 $ systemctl restart postfix
 
-$ echo "Test mail from postfix" | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: `hostname`, `hostname -I | awk '{print $1}'`" to_example@example.com
+$ echo "Test mail from postfix" | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: $(hostname), $(hostname -I | awk '{print $1}')" to_example@example.com
 ```
 
 > The password must be an [App Password](https://security.google.com/settings/security/apppasswords). App Passwords can only be used with accounts that have 2-Step Verification turned on.
@@ -645,7 +645,7 @@ root:MAIL_FROM@dns.com:smtp.gmail.com:587
 
 $ chfn -f "Backup Server" root
 
-$ echo "Test mail from ssmtp" | mail -s "Backup Report: `hostname`, `hostname -I | awk '{print $1}'`" to_example@example.com
+$ echo "Test mail from ssmtp" | mail -s "Backup Report: $(hostname), $(hostname -I | awk '{print $1}')" to_example@example.com
 ```
 
 > The password must be an [App Password](https://security.google.com/settings/security/apppasswords). App Passwords can only be used with accounts that have 2-Step Verification turned on.

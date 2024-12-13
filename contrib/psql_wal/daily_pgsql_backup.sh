@@ -13,7 +13,7 @@
 #   archive_command = 'cp -i %p /home/require_for_sql_backup/pgsql_wal/%f < /dev/null'
 
 # It is recommended to run the daily_pgsql_backup.sh script every hour.
-# Example cron line: 47 */1 * * * /usr/local/fsbackup/scripts/daily_pgsql_backup.sh | mail -aFrom:"FROM NAME<from_example@example.com>" -s "WAL Backup Report: `hostname`, `hostname -I | awk '{print $1}'`" to_example@example.com
+# Example cron line: 47 */1 * * * /usr/local/fsbackup/scripts/daily_pgsql_backup.sh | mail -aFrom:"FROM NAME<from_example@example.com>" -s "WAL Backup Report: $(hostname), $(hostname -I | awk '{print $1}')" to_example@example.com
 #
 # How to restore from WAL files read at the end of this script
 #

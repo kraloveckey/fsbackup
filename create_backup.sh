@@ -4,7 +4,7 @@
 #
 # Example line for crontab:
 #
-# 18 4 * * * /usr/local/fsbackup/create_backup.sh | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: `hostname`, `hostname -I | awk '{print $1}'`" to_example@example.com
+# 18 4 * * * /usr/local/fsbackup/create_backup.sh | mail -aFrom:"FROM NAME<from_example@example.com>" -s "Backup Report: $(hostname), $(hostname -I | awk '{print $1}')" to_example@example.com
 
 #--------------------------------------
 # Path where fsbackup installed.
