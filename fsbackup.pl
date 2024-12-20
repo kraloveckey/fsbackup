@@ -339,7 +339,7 @@ ftp_connect();
 if ($cfg_backup_style eq "hash"){ # Only create a hash without archiving.
 
     if ( $cfg_type eq "local"){
-	system( "cp -f $cfg_cache_dir/$cfg_backup_name/.hash $cfg_local_path/.hash") == 0 || print "Local FS copy hash failed: $?";
+	system( "cp --sparse=never -f $cfg_cache_dir/$cfg_backup_name/.hash $cfg_local_path/.hash") == 0 || print "Local FS copy hash failed: $?";
     } elsif ( $cfg_type eq "remote_ssh"){
 	system( "cat $cfg_cache_dir/$cfg_backup_name/.hash | $prog_ssh -l $cfg_remote_login $cfg_remote_host 'cat - > $cfg_remote_path/.hash'") == 0 || print "SSH connection failed (copy hash): $?\n";
     } elsif ( $cfg_type eq "remote_ftp" || $cfg_type eq "remote_ftps" ){
@@ -365,7 +365,7 @@ if ( $cfg_type eq "local"){
 	system( "cd $cfg_local_path; sh $cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.del");
 	system( "$prog_tar -c -f - -T $cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.list| $prog_tar -xf - -C $cfg_local_path") == 0 || print "Local FS sync failed (tar|untar): $?\n";
 	system( "cd $cfg_local_path; sh $cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.dir");
-	system( "cp -f $cfg_cache_dir/$cfg_backup_name/.hash $cfg_local_path/$backup_file_base.hash") == 0 || print "Local FS copy failed: $?\n";
+	system( "cp --sparse=never -f $cfg_cache_dir/$cfg_backup_name/.hash $cfg_local_path/$backup_file_base.hash") == 0 || print "Local FS copy failed: $?\n";
 
     } else {
 	if ($cfg_clean_flag == 1){ # Delete old copies
@@ -379,11 +379,11 @@ if ( $cfg_type eq "local"){
 		system( "mv -f $cfg_local_path/$cfg_backup_name* $cfg_local_path/OLD/");
 	    }
 	}
-	system( "cp -f $cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.list $cfg_local_path/$backup_file_base.list") == 0 || print "Local FS .list copy failed: $?\n";
-	system( "cp -f $cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.lsize $cfg_local_path/$backup_file_base.lsize") == 0 || print "Local FS .lsize copy failed: $?\n";
-	system( "cp -f $cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.dir $cfg_local_path/$backup_file_base.dir") == 0 || print "Local FS .dir copy failed: $?\n";
-	system( "cp -f $cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.del $cfg_local_path/$backup_file_base.del") == 0 || print "Local FS .del copy failed: $?\n";
-	system( "cp -f $cfg_cache_dir/$cfg_backup_name/.hash $cfg_local_path/$backup_file_base.hash") == 0 || print "Local FS .hash copy failed: $?\n";
+	system( "cp --sparse=never -f $cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.list $cfg_local_path/$backup_file_base.list") == 0 || print "Local FS .list copy failed: $?\n";
+	system( "cp --sparse=never -f $cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.lsize $cfg_local_path/$backup_file_base.lsize") == 0 || print "Local FS .lsize copy failed: $?\n";
+	system( "cp --sparse=never -f $cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.dir $cfg_local_path/$backup_file_base.dir") == 0 || print "Local FS .dir copy failed: $?\n";
+	system( "cp --sparse=never -f $cfg_cache_dir/$cfg_backup_name/$cfg_backup_name.del $cfg_local_path/$backup_file_base.del") == 0 || print "Local FS .del copy failed: $?\n";
+	system( "cp --sparse=never -f $cfg_cache_dir/$cfg_backup_name/.hash $cfg_local_path/$backup_file_base.hash") == 0 || print "Local FS .hash copy failed: $?\n";
 
 	# Processing volume partitioning
 	for ($arc_block_level=0; $arc_block_level <= $#volume_position; $arc_block_level++){

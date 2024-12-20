@@ -89,7 +89,7 @@ fi
 
 echo "Ok, try to mount..."
 
-if rclone mount $FTPS_REMOTE_NAME:$FTPS_SHARE $LOCAL_MNT_DIR --vfs-cache-mode writes --daemon
+if rclone mount $FTPS_REMOTE_NAME:$FTPS_SHARE $LOCAL_MNT_DIR --daemon
 then
         echo "Share mount success. Now beginning backup :)"
 
