@@ -80,7 +80,7 @@ backup_progdump_path="/usr/local/mysql/bin"
 #		use: extra_mysqldump_flag="”
 #-------------------
 
-extra_mysqldump_flag="--complete-insert --host=$backup_mysqlhost"
+extra_mysqldump_flag="--complete-insert --single-transaction --host=$backup_mysqlhost"
 
 
 ############################################################################
