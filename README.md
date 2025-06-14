@@ -649,3 +649,9 @@ $ echo "Test mail from ssmtp" | mail -s "Backup Report: $(hostname), $(hostname 
 ```
 
 > The password must be an [App Password](https://security.google.com/settings/security/apppasswords). App Passwords can only be used with accounts that have 2-Step Verification turned on.
+
+---
+
+<a href="https://www.paypal.com/donate/?hosted_button_id=GWWLEXEF3XL92">
+  <img src="https://raw.githubusercontent.com/kraloveckey/kraloveckey/refs/heads/main/.assets/paypal-donate-button.png" alt="Donate with PayPal" width="225" height="100"/>
+</a>
